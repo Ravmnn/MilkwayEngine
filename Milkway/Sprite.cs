@@ -25,4 +25,8 @@ public class Sprite : BaseObject
 
     public override FloatRect GetBounds()
         => SfmlSprite.GetGlobalBounds();
+
+
+    public static implicit operator Sprite(Texture texture)
+        => new Sprite(texture);
 }
