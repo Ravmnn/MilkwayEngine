@@ -10,4 +10,8 @@
       <ProjectReference Include="..\..\Latte\Latte\Latte.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="DotTiled" Version="0.3.0" />
+    </ItemGroup>
+
 </Project>
