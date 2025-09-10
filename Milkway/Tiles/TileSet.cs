@@ -1,3 +1,6 @@
+using System.Linq;
+using System.Collections.Generic;
+
 using SFML.Graphics;
 
 using Latte.Core.Type;
@@ -12,6 +15,8 @@ public class TileSet
 {
     public Image Image { get; }
 
+    public List<(uint, Texture)> TileCache { get; private set; }
+
     public uint TileSize { get; }
 
     public uint TileCount => GetTileCountOrThrow();
@@ -20,6 +25,7 @@ public class TileSet
     public TileSet(Image image, uint tileSize)
     {
         Image = image;
+        TileCache = [];
         TileSize = tileSize;
 
         if (Image.Size.X != Image.Size.Y)
@@ -45,7 +51,24 @@ public class TileSet
         if (index == 0)
             return ColorTexture.FromColor(TileSize, TileSize, Color.Transparent);
 
-        return new Texture(Image, GetAreaOfTileByIndex(index)!.Value);
+        var cacheTexture = GetTileTextureFromCache(index);
+        var texture = cacheTexture ?? new Texture(Image, GetAreaOfTileByIndex(index)!.Value);
+
+        if (cacheTexture is null)
+            TileCache.Add((index, texture));
+
+        return texture;
+    }
+
+
+    private Texture? GetTileTextureFromCache(uint index)
+    {
+        // TODO: be able to choose whether or not to use the same sprite memory address
+        foreach (var tile in TileCache)
+            if (tile.Item1 == index)
+                return tile.Item2; // sharing the same memory address! currently, individual objects are not needed
+
+        return null;
     }
 
 
