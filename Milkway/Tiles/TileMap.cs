@@ -52,11 +52,11 @@ public class TileMap
     // TODO: Tiled uses layers, add support for them too
     // TODO: add parallax support
 
-    public TileMap(TileSet tileSet, Map tileMap, IntRect? area = null, TileCreationMode creationMode = TileCreationMode.Share, Vec2f? startPosition = null)
+    public TileMap(TileSet tileSet, Map tileMap, TileLayer tileLayer, IntRect? area = null, TileCreationMode creationMode = TileCreationMode.Share, Vec2f? startPosition = null)
         : this((uint?)area?.Width ?? tileMap.Width, (uint?)area?.Height ?? tileMap.Height, tileMap.TileWidth, startPosition)
     {
         var stopwatch = Stopwatch.StartNew();
-            LoadFromTiledTileMap(tileSet, tileMap, area, creationMode);
+            LoadFromTiledTileLayer(tileSet, tileLayer, area, creationMode);
         stopwatch.Stop();
 
         Console.WriteLine($"Initializing tiles from tile map took {stopwatch.ElapsedMilliseconds}ms");
@@ -88,14 +88,11 @@ public class TileMap
     }
 
 
-    private void LoadFromTiledTileMap(TileSet tileSet, Map tileMap, IntRect? area = null, TileCreationMode creationMode = TileCreationMode.Share)
+    private void LoadFromTiledTileLayer(TileSet tileSet, TileLayer layer, IntRect? area = null, TileCreationMode creationMode = TileCreationMode.Share)
     {
-        if (tileMap.Layers[0] is not TileLayer tileLayer)
-            return;
-
         area ??= new IntRect(0, 0, (int)Width, (int)Height);
 
-        var tileIds = TileIdArrayToMatrix(tileLayer.Data.Value.GlobalTileIDs.Value, tileLayer.Width, tileLayer.Height);
+        var tileIds = TileIdArrayToMatrix(layer.Data.Value.GlobalTileIDs.Value, layer.Width, layer.Height);
 
         for (var y = 0; y < area.Value.Height; y++)
         for (var x = 0; x < area.Value.Width; x++)
