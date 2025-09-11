@@ -17,6 +17,13 @@ using Color = SFML.Graphics.Color;
 namespace Milkway.Tiles;
 
 
+public enum TileCreationMode
+{
+    Share,
+    Copy
+}
+
+
 public class TileMap
 {
     public Tile[,] Tiles { get; }
@@ -45,11 +52,11 @@ public class TileMap
     // TODO: Tiled uses layers, add support for them too
     // TODO: add parallax support
 
-    public TileMap(TileSet tileSet, Map tileMap, IntRect? area = null, Vec2f? startPosition = null)
+    public TileMap(TileSet tileSet, Map tileMap, IntRect? area = null, TileCreationMode creationMode = TileCreationMode.Share, Vec2f? startPosition = null)
         : this((uint?)area?.Width ?? tileMap.Width, (uint?)area?.Height ?? tileMap.Height, tileMap.TileWidth, startPosition)
     {
         var stopwatch = Stopwatch.StartNew();
-            LoadFromTiledTileMap(tileSet, tileMap, area);
+            LoadFromTiledTileMap(tileSet, tileMap, area, creationMode);
         stopwatch.Stop();
 
         Console.WriteLine($"Initializing tiles from tile map took {stopwatch.ElapsedMilliseconds}ms");
@@ -70,7 +77,6 @@ public class TileMap
 
         for (var y = 0u; y < Height; y++, currentPosition.Y += TileSize)
         {
-            // TODO: be able to choose whether or not to use the same sprite memory address for all tiles
             for (var x = 0u; x < Width; x++, currentPosition.X += TileSize)
                 Tiles[y, x] = new Tile(emptySprite) // using the same memory address for the empty sprite for all tiles.
                 {
@@ -82,7 +88,7 @@ public class TileMap
     }
 
 
-    private void LoadFromTiledTileMap(TileSet tileSet, Map tileMap, IntRect? area = null)
+    private void LoadFromTiledTileMap(TileSet tileSet, Map tileMap, IntRect? area = null, TileCreationMode creationMode = TileCreationMode.Share)
     {
         if (tileMap.Layers[0] is not TileLayer tileLayer)
             return;
@@ -98,7 +104,11 @@ public class TileMap
             var indexX = x + area.Value.Left;
 
             var id = tileIds[indexY, indexX];
-            Tiles[y, x].Sprite = tileSet.GetTileTextureByIndex(id);
+
+            var texture = tileSet.GetTileTextureByIndex(id);
+            texture = creationMode == TileCreationMode.Copy ? new Texture(texture) : texture;
+
+            Tiles[y, x].Sprite = texture;
         }
     }
 

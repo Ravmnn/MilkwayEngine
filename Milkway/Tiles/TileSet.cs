@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Collections.Generic;
 
 using SFML.Graphics;
@@ -63,10 +62,9 @@ public class TileSet
 
     private Texture? GetTileTextureFromCache(uint index)
     {
-        // TODO: be able to choose whether or not to use the same sprite memory address
         foreach (var tile in TileCache)
             if (tile.Item1 == index)
-                return tile.Item2; // sharing the same memory address! currently, individual objects are not needed
+                return tile.Item2; // sharing the same memory address!
 
         return null;
     }
