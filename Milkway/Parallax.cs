@@ -2,10 +2,6 @@ using System;
 using System.Collections.Generic;
 
 using Latte.Core;
-using Latte.Core.Type;
-
-
-using Color = SFML.Graphics.Color;
 
 
 namespace Milkway;
@@ -40,30 +36,22 @@ public class Parallax : IUpdateable, IDrawable
         if (!Active)
             return;
 
-        foreach (var (content, depth, _) in Layers)
+        foreach (var layer in Layers)
         {
-            var movement = Calculator.Movement(depth);
-            var scale = Calculator.Scale(depth);
-            var shade = Calculator.Shade(depth);
-
-            var shadeColor = (NormalizedColorRGBA)Color.White;
-            shadeColor.A = 1f - shade;
-
-            content.Position -= Camera.DeltaPosition * movement;
-            content.Scale = new Vec2f(scale, scale);
-            content.Color = shadeColor;
+            layer.Update();
+            layer.UpdateLayer(Calculator, Camera.DeltaPosition);
         }
 
         UpdateEvent?.Invoke(this, EventArgs.Empty);
     }
 
 
-    public void Draw(IRenderer target)
+    public virtual void Draw(IRenderer target)
     {
         SortLayersByDepthAndPriority();
 
         foreach (var layer in Layers)
-            target.Render(layer.Content);
+            layer.Draw(target);
 
         DrawEvent?.Invoke(this, EventArgs.Empty);
     }

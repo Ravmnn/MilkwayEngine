@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -24,13 +25,19 @@ public enum TileCreationMode
 }
 
 
-public class TileMap
+public class TileMap : IUpdateable, IDrawable
 {
     public Tile[,] Tiles { get; }
 
     public uint Width { get; }
     public uint Height { get; }
     public uint TileSize { get; }
+
+    public uint WidthInPixels => Width * TileSize;
+    public uint HeightInPixels => Height * TileSize;
+
+    public event EventHandler? UpdateEvent;
+    public event EventHandler? DrawEvent;
 
 
     public TileMap(uint width, uint height, uint tileSize, Vec2f? startPosition = null)
@@ -49,9 +56,6 @@ public class TileMap
     }
 
 
-    // TODO: Tiled uses layers, add support for them too
-    // TODO: add parallax support
-
     public TileMap(TileSet tileSet, Map tileMap, TileLayer tileLayer, IntRect? area = null, TileCreationMode creationMode = TileCreationMode.Share, Vec2f? startPosition = null)
         : this((uint?)area?.Width ?? tileMap.Width, (uint?)area?.Height ?? tileMap.Height, tileMap.TileWidth, startPosition)
     {
@@ -60,6 +64,24 @@ public class TileMap
         stopwatch.Stop();
 
         Console.WriteLine($"Initializing tiles from tile map took {stopwatch.ElapsedMilliseconds}ms");
+    }
+
+
+    public virtual void Update()
+    {
+        foreach (var tile in Tiles)
+            App.UpdateObject(tile);
+
+        UpdateEvent?.Invoke(this, EventArgs.Empty);
+    }
+
+
+    public virtual void Draw(IRenderer target)
+    {
+        foreach (var tile in Tiles)
+            App.DrawObject(target, tile);
+
+        DrawEvent?.Invoke(this, EventArgs.Empty);
     }
 
 
@@ -73,7 +95,7 @@ public class TileMap
     private void InitializeTiles(Vec2f startPosition)
     {
         var currentPosition = startPosition.Copy();
-        var emptySprite = ColorTexture.FromColor(8, 8, Color.Transparent);
+        var emptySprite = ColorTexture.FromColor(TileSize, TileSize, Color.Transparent);
 
         for (var y = 0u; y < Height; y++, currentPosition.Y += TileSize)
         {
@@ -119,5 +141,17 @@ public class TileMap
                 matrix[y, x] = array[y * width + x];
 
         return matrix;
+    }
+
+
+    public static IEnumerable<TileMap> GetTileMapsFromTiledTileMap(TileSet tileSet, Map map, IntRect? area = null)
+    {
+        var tileMaps = new List<TileMap>();
+
+        foreach (var layer in map.Layers)
+            if (layer is TileLayer tileLayer)
+                tileMaps.Add(new TileMap(tileSet, map, tileLayer, area));
+
+        return tileMaps;
     }
 }
