@@ -1,4 +1,4 @@
-using SFML.Graphics;
+using System;
 
 using Latte.Core.Type;
 
@@ -17,20 +17,39 @@ public interface IBody
     Vec2f Velocity { get; set; }
     Vec2f Acceleration { get; set; }
 
+    bool Static { get; set; }
+
+    event EventHandler? MoveVerticallyEvent;
+    event EventHandler? MoveHorizontallyEvent;
+
 
     void UpdateDisplacement()
     {
+        const float DragFactor = 0.01f;
+
+        if (Static)
+        {
+            Velocity = Acceleration = new Vec2f();
+            return;
+        }
+
         if (World is not null)
         {
             Acceleration += World.Gravity;
-            Acceleration -= World.Drag * Velocity / 100f;
+            Acceleration -= World.Drag * Velocity * DragFactor;
         }
 
-        Position += Velocity;
+        Position.X += Velocity.X;
+        OnMoveHorizontally();
+
+        Position.Y += Velocity.Y;
+        OnMoveVertically();
+
         Velocity += Acceleration;
         Acceleration = new Vec2f();
     }
 
 
-    FloatRect BoundingBox();
+    void OnMoveVertically();
+    void OnMoveHorizontally();
 }
