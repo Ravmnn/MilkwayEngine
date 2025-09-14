@@ -25,18 +25,10 @@ public interface IBody
 
     void UpdateDisplacement()
     {
-        const float DragFactor = 0.01f;
-
         if (Static)
         {
             Velocity = Acceleration = new Vec2f();
             return;
-        }
-
-        if (World is not null)
-        {
-            Acceleration += World.Gravity;
-            Acceleration -= World.Drag * Velocity * DragFactor;
         }
 
         Position.X += Velocity.X;

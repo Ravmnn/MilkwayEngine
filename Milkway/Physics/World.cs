@@ -23,9 +23,21 @@ public class World : IUpdateable
     public void Update()
     {
         foreach (var body in Bodies)
+        {
+            ApplyInfluencesTo(body);
             body.UpdateDisplacement();
+        }
 
         UpdateEvent?.Invoke(this, EventArgs.Empty);
+    }
+
+
+    protected virtual void ApplyInfluencesTo(IBody body)
+    {
+        const float DragFactor = 0.01f;
+
+        body.Acceleration += Gravity;
+        body.Acceleration -= Drag * body.Velocity * DragFactor;
     }
 
 
