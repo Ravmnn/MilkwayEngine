@@ -48,6 +48,7 @@ static class CollisionTestProgram
     private static void Main()
     {
         App.Init(VideoMode.FullscreenModes[0], "Milkway Engine - Collision Test", style: Styles.Fullscreen);
+        App.Debugger!.EnableKeyShortcuts = true;
         App.ManualObjectUpdate = false;
         App.ManualClearDisplayProcess = true;
 

@@ -85,14 +85,17 @@ public class World : IUpdateable
             if (!Collision.IsColliding(rigidBody.BoundingBox(), rigidOther.BoundingBox(), out var intersection))
                 continue;
 
-            if (rigidBody.Velocity.X > 0f)
-                rigidBody.Position.X -= intersection.Width;
+            if (rigidOther.Static)
+            {
+                if (rigidBody.Velocity.X > 0f)
+                    rigidBody.Position.X -= intersection.Width;
 
-            else if (rigidBody.Velocity.X < 0f)
-                rigidBody.Position.X += intersection.Width;
+                else if (rigidBody.Velocity.X < 0f)
+                    rigidBody.Position.X += intersection.Width;
 
-            rigidBody.Velocity.X = 0;
-            rigidBody.Acceleration.X = 0;
+                rigidBody.Velocity.X = 0;
+                rigidBody.Acceleration.X = 0;
+            }
 
             rigidBody.OnCollide(rigidOther);
             rigidOther.OnCollide(rigidBody);
@@ -113,14 +116,17 @@ public class World : IUpdateable
             if (!Collision.IsColliding(rigidBody.BoundingBox(), rigidOther.BoundingBox(), out var intersection))
                 continue;
 
-            if (rigidBody.Velocity.Y > 0f)
-                rigidBody.Position.Y -= intersection.Height;
+            if (rigidOther.Static)
+            {
+                if (rigidBody.Velocity.Y > 0f)
+                    rigidBody.Position.Y -= intersection.Height;
 
-            else if (rigidBody.Velocity.Y < 0f)
-                rigidBody.Position.Y += intersection.Height;
+                else if (rigidBody.Velocity.Y < 0f)
+                    rigidBody.Position.Y += intersection.Height;
 
-            rigidBody.Velocity.Y = 0;
-            rigidBody.Acceleration.Y = 0;
+                rigidBody.Velocity.Y = 0;
+                rigidBody.Acceleration.Y = 0;
+            }
 
             rigidBody.OnCollide(rigidOther);
             rigidOther.OnCollide(rigidBody);
