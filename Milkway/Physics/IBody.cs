@@ -6,9 +6,6 @@ using Latte.Core.Type;
 namespace Milkway.Physics;
 
 
-// TODO: add something like Engine.Init(), which initializes stuff specifically for game development
-
-
 public interface IBody
 {
     World? World { get; set; }
