@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 
+using SFML.Graphics;
+
 using Latte.Core;
 using Latte.Core.Type;
 
@@ -72,20 +74,10 @@ public class World : IUpdateable
     }
 
 
-    private void ProcessHorizontalCollisions(object? body, EventArgs __)
+    private void ProcessHorizontalCollisions(object? sender, EventArgs __)
     {
-        if (body is not IRigidBody rigidBody)
-            return;
-
-        foreach (var other in Bodies)
-        {
-            if (other == rigidBody || other is not IRigidBody rigidOther)
-                continue;
-
-            if (!Collision.IsColliding(rigidBody.BoundingBox(), rigidOther.BoundingBox(), out var intersection))
-                continue;
-
-            if (rigidOther.Static)
+        if (sender is IBody body)
+            ProcessStaticCollisionsOf(body, (rigidBody, intersection) =>
             {
                 if (rigidBody.Velocity.X > 0f)
                     rigidBody.Position.X -= intersection.Width;
@@ -95,28 +87,14 @@ public class World : IUpdateable
 
                 rigidBody.Velocity.X = 0;
                 rigidBody.Acceleration.X = 0;
-            }
-
-            rigidBody.OnCollide(rigidOther);
-            rigidOther.OnCollide(rigidBody);
-        }
+            });
     }
 
 
-    private void ProcessVerticalCollisions(object? body, EventArgs __)
+    private void ProcessVerticalCollisions(object? sender, EventArgs __)
     {
-        if (body is not IRigidBody rigidBody)
-            return;
-
-        foreach (var other in Bodies)
-        {
-            if (other == rigidBody || other is not IRigidBody rigidOther)
-                continue;
-
-            if (!Collision.IsColliding(rigidBody.BoundingBox(), rigidOther.BoundingBox(), out var intersection))
-                continue;
-
-            if (rigidOther.Static)
+        if (sender is IBody body)
+            ProcessStaticCollisionsOf(body, (rigidBody, intersection) =>
             {
                 if (rigidBody.Velocity.Y > 0f)
                     rigidBody.Position.Y -= intersection.Height;
@@ -126,10 +104,30 @@ public class World : IUpdateable
 
                 rigidBody.Velocity.Y = 0;
                 rigidBody.Acceleration.Y = 0;
-            }
+            });
+    }
 
-            rigidBody.OnCollide(rigidOther);
-            rigidOther.OnCollide(rigidBody);
+
+    private void ProcessStaticCollisionsOf(IBody body, Action<IBoxBody, FloatRect> collisionResponse)
+    {
+        if (body is not IBoxBody boxBody)
+            return;
+
+        foreach (var other in Bodies)
+        {
+            if (other == boxBody || other is not IBoxBody boxOther)
+                continue;
+
+            if (!Collision.IsColliding(boxBody.BoundingBox(), boxOther.BoundingBox(), out var intersection))
+                continue;
+
+            // static bodies can't naturally update their position, so they don't reach this part.
+
+            if (!boxBody.Phantom && boxOther.IsSolid)
+                collisionResponse(boxBody, intersection);
+
+            boxBody.OnCollide(boxOther);
+            boxOther.OnCollide(boxBody);
         }
     }
 }

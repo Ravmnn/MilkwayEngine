@@ -11,7 +11,7 @@ using Milkway.Physics;
 namespace Milkway.Tests;
 
 
-public class RectBody(Vec2f position, Vec2f size, float radius = 0) : RectangleObject(position, size, radius), IRigidBody
+public class RectBody(Vec2f position, Vec2f size, float radius = 0) : RectangleObject(position, size, radius), IBoxBody
 {
     public World? World { get; set; }
 
@@ -19,6 +19,7 @@ public class RectBody(Vec2f position, Vec2f size, float radius = 0) : RectangleO
     public Vec2f Acceleration { get; set; } = new Vec2f();
 
     public bool Static { get; set; }
+    public bool Phantom { get; set; }
 
     public event EventHandler? MoveVerticallyEvent;
     public event EventHandler? MoveHorizontallyEvent;
@@ -36,6 +37,6 @@ public class RectBody(Vec2f position, Vec2f size, float radius = 0) : RectangleO
         => MoveHorizontallyEvent?.Invoke(this, EventArgs.Empty);
 
 
-    public void OnCollide(IRigidBody other)
+    public void OnCollide(IBoxBody other)
         => CollideEvent?.Invoke(this, new RigidBodyEventArgs(other));
 }
