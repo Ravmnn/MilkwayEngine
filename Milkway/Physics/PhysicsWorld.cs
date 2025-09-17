@@ -10,7 +10,7 @@ using Latte.Core.Type;
 namespace Milkway.Physics;
 
 
-public class World : IUpdateable
+public class PhysicsWorld : IUpdateable
 {
     private readonly List<IBody> _bodies = [];
 
@@ -45,7 +45,7 @@ public class World : IUpdateable
 
     public void AddBody(IBody body)
     {
-        body.World = this;
+        body.PhysicsWorld = this;
         AddEventCallbacks(body);
 
         _bodies.Add(body);
@@ -54,7 +54,7 @@ public class World : IUpdateable
 
     public bool RemoveBody(IBody body)
     {
-        body.World = null;
+        body.PhysicsWorld = null;
         RemoveEventCallbacks(body);
 
         return _bodies.Remove(body);
@@ -73,6 +73,8 @@ public class World : IUpdateable
         body.MoveVerticallyEvent -= ProcessVerticalCollisions;
     }
 
+
+    // TODO: fix collision tunneling
 
     private void ProcessHorizontalCollisions(object? sender, EventArgs __)
     {

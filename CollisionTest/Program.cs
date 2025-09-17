@@ -14,19 +14,10 @@ using Milkway.Physics;
 namespace Milkway.Tests;
 
 
-class PlayerType : RectBody
-{
-    public PlayerType() : base(new Vec2f(100, 100), new Vec2f(30, 30))
-    {
-        Color = SFML.Graphics.Color.Red;
-    }
-}
-
-
 static class CollisionTestProgram
 {
-    private static World World { get; set; }
-    private static PlayerType Player { get; set; }
+    private static PhysicsWorld PhysicsWorld { get; set; }
+    private static RectPlayer Player { get; set; }
 
     private static Vec2f? WallStart { get; set; }
     private static Vec2f? WallEnd { get; set; }
@@ -34,23 +25,21 @@ static class CollisionTestProgram
 
     static CollisionTestProgram()
     {
-        World = new World
+        PhysicsWorld = new PhysicsWorld
         {
             Drag = new Vec2f(1.5f, 1.5f),
             Gravity = new Vec2f(y: 0.2f)
         };
 
-        Player = new PlayerType();
+        Player = new RectPlayer();
 
-        World.AddBody(Player);
+        PhysicsWorld.AddBody(Player);
     }
 
 
     private static void Main()
     {
-        App.Init(VideoMode.FullscreenModes[0], "Milkway Engine - Collision Test", style: Styles.Fullscreen);
-        App.Debugger!.EnableKeyShortcuts = true;
-        App.ManualClearDisplayProcess = true;
+        Engine.InitFullScreen("Milkway Engine - Collision Test");
 
 
         App.AddObjects(Player);
@@ -61,9 +50,8 @@ static class CollisionTestProgram
 
             UpdateWallInsertion();
             UpdateWallRemoval();
-            UpdateMovement();
 
-            World.Update();
+            PhysicsWorld.Update();
 
 
             App.Window.Clear();
@@ -74,24 +62,6 @@ static class CollisionTestProgram
 
             App.Window.Display();
         }
-    }
-
-
-    private static void UpdateMovement()
-    {
-        const float AccelerationFactor = 0.5f;
-
-        if (Keyboard.IsKeyPressed(Keyboard.Key.W))
-            Player.Acceleration.Y = -AccelerationFactor;
-
-        if (Keyboard.IsKeyPressed(Keyboard.Key.S))
-            Player.Acceleration.Y = AccelerationFactor;
-
-        if (Keyboard.IsKeyPressed(Keyboard.Key.A))
-            Player.Acceleration.X = -AccelerationFactor;
-
-        if (Keyboard.IsKeyPressed(Keyboard.Key.D))
-            Player.Acceleration.X = AccelerationFactor;
     }
 
 
@@ -111,7 +81,7 @@ static class CollisionTestProgram
 
         var body = new RectBody(WallStart, WallEnd - WallStart) { Static = true };
 
-        World.AddBody(body);
+        PhysicsWorld.AddBody(body);
         App.AddObject(body);
 
         WallStart = WallEnd = null;
@@ -120,14 +90,14 @@ static class CollisionTestProgram
 
     private static void UpdateWallRemoval()
     {
-        foreach (var body in World.Bodies.ToArray())
+        foreach (var body in PhysicsWorld.Bodies.ToArray())
         {
-            if (body is not RectBody wall || body is PlayerType)
+            if (body is not RectBody wall || body is RectPlayer)
                 continue;
 
             if (MouseInput.PositionInView.IsPointOverObject(wall) && Mouse.IsButtonPressed(Mouse.Button.Right))
             {
-                World.RemoveBody(wall);
+                PhysicsWorld.RemoveBody(wall);
                 App.RemoveObject(wall);
             }
         }
@@ -145,9 +115,9 @@ static class CollisionTestProgram
 
     private static void DrawWallSelection()
     {
-        foreach (var body in World.Bodies)
+        foreach (var body in PhysicsWorld.Bodies)
         {
-            if (body is not RectBody wall || body is PlayerType)
+            if (body is not RectBody wall || body is RectPlayer)
                 continue;
 
             if (MouseInput.PositionInView.IsPointOverObject(wall))

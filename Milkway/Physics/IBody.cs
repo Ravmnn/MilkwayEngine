@@ -8,7 +8,7 @@ namespace Milkway.Physics;
 
 public interface IBody
 {
-    World? World { get; set; }
+    PhysicsWorld? PhysicsWorld { get; set; }
 
     Vec2f Position { get; set; }
     Vec2f Velocity { get; set; }
