@@ -61,7 +61,7 @@ public static class CameraTestProgram
         PhysicsWorld.AddBody(Player);
         App.AddObject(Player);
 
-        CreateRandomSquares(2000, new FloatRect(-3000f, -3000f, 12000f, 12000f), 10f, 50f);
+        CreateRandomSquares(1000, new FloatRect(-3000f, -3000f, 12000f, 12000f), 10f, 50f);
 
         while (!App.ShouldQuit)
         {

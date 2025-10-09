@@ -1,12 +1,14 @@
 using SFML.Graphics;
 
-using Latte.Core;
+using Latte.Core.Objects;
 
 
 using SfSprite = SFML.Graphics.Sprite;
 
 
 namespace Milkway;
+
+
 
 
 public class Sprite : BaseObject
@@ -17,14 +19,20 @@ public class Sprite : BaseObject
     public SfSprite SfmlSprite { get; }
 
 
+
+
     public Sprite(Texture texture)
     {
         SfmlSprite = new SfSprite(texture);
     }
 
 
+
+
     public override FloatRect GetBounds()
         => SfmlSprite.GetGlobalBounds();
+
+
 
 
     public static implicit operator Sprite(Texture texture)

@@ -8,6 +8,8 @@ using DotTiled;
 namespace Milkway.Tiles;
 
 
+
+
 public class TileMapParallax : Parallax
 {
     public TileMapParallax(Camera camera, TileSet tileSet, Map map, IntRect? area = null, IParallaxCalculator? calculator = null)
@@ -15,6 +17,8 @@ public class TileMapParallax : Parallax
     {
         InitializeFromTiledTileMap(tileSet, map, area);
     }
+
+
 
 
     private void InitializeFromTiledTileMap(TileSet tileSet, Map map, IntRect? area = null)
@@ -27,12 +31,15 @@ public class TileMapParallax : Parallax
     }
 
 
+
+
     public void AddTilesToApp()
     {
         foreach (var layer in Layers)
             if (layer is TileMapParallaxLayer tileLayer)
                 tileLayer.TileMap.AddTilesToApp();
     }
+
 
     public void RemoveTilesFromApp()
     {

@@ -2,22 +2,29 @@ using System;
 using System.Collections.Generic;
 
 using Latte.Core;
+using Latte.Rendering;
 
 
 namespace Milkway;
+
+
 
 
 public class Parallax : IUpdateable, IDrawable
 {
     public Camera Camera { get; set; }
 
+
     public List<ParallaxLayer> Layers { get; set; }
     public IParallaxCalculator Calculator { get; set; }
 
     public bool Active { get; set; }
 
+
     public event EventHandler? UpdateEvent;
     public event EventHandler? DrawEvent;
+
+
 
 
     public Parallax(Camera camera, IParallaxCalculator? calculator = null)
@@ -29,6 +36,8 @@ public class Parallax : IUpdateable, IDrawable
 
         Active = true;
     }
+
+
 
 
     public virtual void Update()
@@ -46,6 +55,8 @@ public class Parallax : IUpdateable, IDrawable
     }
 
 
+
+
     public virtual void Draw(IRenderer target)
     {
         SortLayersByDepthAndPriority();
@@ -55,6 +66,8 @@ public class Parallax : IUpdateable, IDrawable
 
         DrawEvent?.Invoke(this, EventArgs.Empty);
     }
+
+
 
 
     private void SortLayersByDepthAndPriority()

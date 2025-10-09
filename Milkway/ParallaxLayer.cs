@@ -2,6 +2,7 @@ using System;
 
 using Latte.Core;
 using Latte.Core.Type;
+using Latte.Rendering;
 
 
 using SfSprite = SFML.Graphics.Sprite;
@@ -10,18 +11,24 @@ using SfSprite = SFML.Graphics.Sprite;
 namespace Milkway;
 
 
+
+
 public class ParallaxLayer(SfSprite content, float depth, int relativePriority = 0) : IUpdateable, IDrawable
 {
     public SfSprite Content { get; set; } = content;
     public float Depth { get; set; } = depth;
     public int RelativePriority { get; set; } = relativePriority;
 
+
     public float ExtraMovement { get; set; }
     public float ExtraScale { get; set; }
     public float ExtraShade { get; set; }
 
+
     public event EventHandler? UpdateEvent;
     public event EventHandler? DrawEvent;
+
+
 
 
     public virtual void Update()
@@ -41,6 +48,8 @@ public class ParallaxLayer(SfSprite content, float depth, int relativePriority =
         Content.Scale = new Vec2f(scale, scale);
         Content.Color = shadeColor;
     }
+
+
 
 
     public virtual void Draw(IRenderer target)

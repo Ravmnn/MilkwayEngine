@@ -1,6 +1,6 @@
 using SFML.Graphics;
 
-using Latte.Core;
+using Latte.Rendering;
 
 
 using SfSprite = SFML.Graphics.Sprite;
@@ -9,15 +9,22 @@ using SfSprite = SFML.Graphics.Sprite;
 namespace Milkway.Tiles;
 
 
+
+
 public class TileMapParallaxLayer : ParallaxLayer
 {
     private bool _shouldDrawTileMapToContents;
 
 
+
+
     public RenderTexture RenderTexture { get; set; }
     public TextureRenderer Renderer { get; set; }
 
+
     public TileMap TileMap { get; set; }
+
+
 
 
     public TileMapParallaxLayer(TileMap tileMap, float depth, int relativePriority = 0)
@@ -33,12 +40,16 @@ public class TileMapParallaxLayer : ParallaxLayer
     }
 
 
+
+
     public override void Update()
     {
         Content = Renderer.RenderTextureSprite;
 
         base.Update();
     }
+
+
 
 
     public override void Draw(IRenderer target)

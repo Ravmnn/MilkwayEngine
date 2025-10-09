@@ -6,6 +6,8 @@ using Latte.Core.Type;
 namespace Milkway;
 
 
+
+
 public static class ColorTexture
 {
     public static Texture FromColor(uint width, uint height, ColorRGBA color)

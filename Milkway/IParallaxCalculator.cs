@@ -1,6 +1,8 @@
 namespace Milkway;
 
 
+
+
 public interface IParallaxCalculator
 {
     public float MovementFactor { get; set; }

@@ -7,6 +7,8 @@ using Latte.Application;
 namespace Milkway;
 
 
+
+
 public static class Engine
 {
     public static void InitFullScreen(string title, Font? defaultFont = null)

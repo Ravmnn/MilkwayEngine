@@ -10,15 +10,19 @@ using Milkway.Exceptions.Tiles;
 namespace Milkway.Tiles;
 
 
+
+
 public class TileSet
 {
     public Image Image { get; }
 
     public List<(uint, Texture)> TileCache { get; private set; }
 
-    public uint TileSize { get; }
 
+    public uint TileSize { get; }
     public uint TileCount => GetTileCountOrThrow();
+
+
 
 
     public TileSet(Image image, uint tileSize)
@@ -32,6 +36,8 @@ public class TileSet
     }
 
 
+
+
     private uint GetTileCountOrThrow()
     {
         var rest = Image.Size.X % TileSize;
@@ -42,6 +48,8 @@ public class TileSet
 
         return tileCount * tileCount;
     }
+
+
 
 
     public Texture GetTileTextureByIndex(uint index)
@@ -68,6 +76,8 @@ public class TileSet
 
         return null;
     }
+
+
 
 
     private IntRect? GetAreaOfTileByIndex(uint index)

@@ -1,7 +1,6 @@
-using System;
-
-
 namespace Milkway;
+
+
 
 
 public class DefaultParallaxCalculator : IParallaxCalculator

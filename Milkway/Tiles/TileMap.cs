@@ -7,6 +7,8 @@ using SFML.Graphics;
 
 using Latte.Core;
 using Latte.Core.Type;
+using Latte.Core.Objects;
+using Latte.Rendering;
 using Latte.Application;
 
 using DotTiled;
@@ -18,11 +20,15 @@ using Color = SFML.Graphics.Color;
 namespace Milkway.Tiles;
 
 
+
+
 public enum TileCreationMode
 {
     Share,
     Copy
 }
+
+
 
 
 public class TileMap : IUpdateable, IDrawable
@@ -36,8 +42,11 @@ public class TileMap : IUpdateable, IDrawable
     public uint WidthInPixels => Width * TileSize;
     public uint HeightInPixels => Height * TileSize;
 
+
     public event EventHandler? UpdateEvent;
     public event EventHandler? DrawEvent;
+
+
 
 
     public TileMap(uint width, uint height, uint tileSize, Vec2f? startPosition = null)
@@ -67,6 +76,8 @@ public class TileMap : IUpdateable, IDrawable
     }
 
 
+
+
     public virtual void Update()
     {
         foreach (var tile in Tiles)
@@ -74,6 +85,8 @@ public class TileMap : IUpdateable, IDrawable
 
         UpdateEvent?.Invoke(this, EventArgs.Empty);
     }
+
+
 
 
     public virtual void Draw(IRenderer target)
@@ -85,11 +98,16 @@ public class TileMap : IUpdateable, IDrawable
     }
 
 
+
+
     public void AddTilesToApp()
         => App.AddObjects(Tiles.Cast<BaseObject>());
 
+
     public void RemoveTilesFromApp()
         => App.RemoveObjects(Tiles.Cast<BaseObject>());
+
+
 
 
     private void InitializeTiles(Vec2f startPosition)
@@ -132,6 +150,8 @@ public class TileMap : IUpdateable, IDrawable
     }
 
 
+
+
     private static uint[,] TileIdArrayToMatrix(uint[] array, uint width, uint height)
     {
         var matrix = new uint[height, width];
@@ -142,6 +162,8 @@ public class TileMap : IUpdateable, IDrawable
 
         return matrix;
     }
+
+
 
 
     public static IEnumerable<TileMap> GetTileMapsFromTiledTileMap(TileSet tileSet, Map map, IntRect? area = null)

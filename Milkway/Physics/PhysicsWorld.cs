@@ -10,11 +10,11 @@ using Latte.Core.Type;
 namespace Milkway.Physics;
 
 
+
+
 public class PhysicsWorld : IUpdateable
 {
-    private readonly List<IBody> _bodies = [];
-
-    public IEnumerable<IBody> Bodies => _bodies;
+    public List<IBody> Bodies { get; private set; } = [];
 
     public Vec2f Gravity { get; set; } = new Vec2f();
     public Vec2f Drag { get; set; } = new Vec2f();
@@ -48,7 +48,7 @@ public class PhysicsWorld : IUpdateable
         body.PhysicsWorld = this;
         AddEventCallbacks(body);
 
-        _bodies.Add(body);
+        Bodies.Add(body);
     }
 
 
@@ -57,7 +57,7 @@ public class PhysicsWorld : IUpdateable
         body.PhysicsWorld = null;
         RemoveEventCallbacks(body);
 
-        return _bodies.Remove(body);
+        return Bodies.Remove(body);
     }
 
 

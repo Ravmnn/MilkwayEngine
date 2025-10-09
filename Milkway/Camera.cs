@@ -3,10 +3,13 @@ using System;
 using SFML.Graphics;
 
 using Latte.Core;
+using Latte.Core.Objects;
 using Latte.Core.Type;
 
 
 namespace Milkway;
+
+
 
 
 public class Camera : IUpdateable
@@ -14,10 +17,14 @@ public class Camera : IUpdateable
     private Vec2f _softFollowAmount;
 
 
+
+
     public RenderTarget Target { get; }
+
 
     public View View { get; set; }
     public View LastView { get; set; }
+
 
     public Vec2f Position
     {
@@ -43,18 +50,22 @@ public class Camera : IUpdateable
         set => View.Size = value;
     }
 
+
     public Vec2f DeltaPosition => LastView.Center - View.Center;
     public Vec2f DeltaSize => LastView.Size - View.Size;
 
-    public BaseObject? Follow { get; set; }
 
+    public BaseObject? Follow { get; set; }
     public Vec2f SoftFollowAmount
     {
         get => _softFollowAmount;
         set => _softFollowAmount = new Vec2f(Math.Max(1f, value.X), Math.Max(1f, value.Y));
     }
 
+
     public event EventHandler? UpdateEvent;
+
+
 
 
     public Camera(RenderTarget target)
@@ -67,6 +78,8 @@ public class Camera : IUpdateable
 
         SoftFollowAmount = new Vec2f(1f, 1f);
     }
+
+
 
 
     public virtual void Update()

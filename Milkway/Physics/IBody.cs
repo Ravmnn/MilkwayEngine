@@ -6,9 +6,12 @@ using Latte.Core.Type;
 namespace Milkway.Physics;
 
 
+
+
 public interface IBody
 {
     PhysicsWorld? PhysicsWorld { get; set; }
+
 
     Vec2f Position { get; set; }
     Vec2f Velocity { get; set; }
@@ -16,8 +19,11 @@ public interface IBody
 
     bool Static { get; set; }
 
+
     event EventHandler? MoveVerticallyEvent;
     event EventHandler? MoveHorizontallyEvent;
+
+
 
 
     void UpdateDisplacement()
@@ -37,6 +43,8 @@ public interface IBody
         Velocity += Acceleration;
         Acceleration = new Vec2f();
     }
+
+
 
 
     void OnMoveVertically();

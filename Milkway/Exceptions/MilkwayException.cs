@@ -6,6 +6,8 @@ using Latte.Exceptions;
 namespace Milkway.Exceptions;
 
 
+
+
 public class MilkwayException : LatteException
 {
     public MilkwayException(string message) : base(message)
