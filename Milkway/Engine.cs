@@ -11,14 +11,19 @@ namespace Milkway;
 
 public static class Engine
 {
-    public static void InitFullScreen(string title, Font? defaultFont = null)
-        => Init(VideoMode.DesktopMode, title, defaultFont, Styles.Fullscreen);
-
-
-    public static void Init(VideoMode mode, string title, Font? defaultFont = null,
-        Styles style = Styles.Default, ContextSettings? contextSettings = null)
+    public static void InitFullScreen(string title, AppInitializationSettings? settings = null)
     {
-        App.Init(mode, title,defaultFont, style, contextSettings);
+        settings ??= AppInitializationSettings.Default;
+        settings = settings.Value with { WindowStyle = Styles.Fullscreen };
+
+
+        Init(VideoMode.DesktopMode, title, settings);
+    }
+
+
+    public static void Init(VideoMode mode, string title, AppInitializationSettings? settings = null)
+    {
+        App.Init(mode, title, settings);
         App.ManualClearDisplayProcess = true;
     }
 }
