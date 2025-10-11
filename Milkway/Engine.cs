@@ -11,6 +11,8 @@ namespace Milkway;
 
 public static class Engine
 {
+    // TODO: move this to Latte
+
     public static void InitFullScreen(string title, AppInitializationSettings? settings = null)
     {
         settings ??= AppInitializationSettings.Default;
@@ -24,6 +26,5 @@ public static class Engine
     public static void Init(VideoMode mode, string title, AppInitializationSettings? settings = null)
     {
         App.Init(mode, title, settings);
-        App.ManualClearDisplayProcess = true;
     }
 }

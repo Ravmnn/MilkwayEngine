@@ -13,11 +13,6 @@ namespace Milkway.Tiles;
 
 public class TileMapParallaxLayer : ParallaxLayer
 {
-    private bool _shouldDrawTileMapToContents;
-
-
-
-
     public RenderTexture RenderTexture { get; set; }
     public TextureRenderer Renderer { get; set; }
 
@@ -30,9 +25,6 @@ public class TileMapParallaxLayer : ParallaxLayer
     public TileMapParallaxLayer(TileMap tileMap, float depth, int relativePriority = 0)
         : base(new SfSprite(), depth, relativePriority)
     {
-        _shouldDrawTileMapToContents = true;
-
-
         RenderTexture = new RenderTexture(tileMap.WidthInPixels, tileMap.HeightInPixels);
         Renderer = new TextureRenderer(RenderTexture);
 
@@ -46,6 +38,8 @@ public class TileMapParallaxLayer : ParallaxLayer
     {
         Content = Renderer.RenderTextureSprite;
 
+        TileMap.Update();
+
         base.Update();
     }
 
@@ -54,11 +48,7 @@ public class TileMapParallaxLayer : ParallaxLayer
 
     public override void Draw(IRenderer target)
     {
-        if (_shouldDrawTileMapToContents)
-        {
-            TileMap.Draw(Renderer);
-            _shouldDrawTileMapToContents = false;
-        }
+        TileMap.Draw(Renderer);
 
         var oldPosition = Content.Position;
         FixScale();
