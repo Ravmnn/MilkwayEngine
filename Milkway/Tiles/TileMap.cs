@@ -14,9 +14,6 @@ using Latte.Application;
 using DotTiled;
 
 
-using Color = SFML.Graphics.Color;
-
-
 namespace Milkway.Tiles;
 
 
@@ -25,7 +22,7 @@ namespace Milkway.Tiles;
 public enum TileCreationMode
 {
     Share,
-    Copy
+    Instance
 }
 
 
@@ -49,7 +46,7 @@ public class TileMap : IUpdateable, IDrawable
 
 
 
-    public TileMap(uint width, uint height, uint tileSize, Vec2f? startPosition = null)
+    public TileMap(uint width, uint height, uint tileSize)
     {
         Width = width;
         Height = height;
@@ -58,15 +55,15 @@ public class TileMap : IUpdateable, IDrawable
         Tiles = new Tile[Height, Width];
 
         var stopwatch = Stopwatch.StartNew();
-            InitializeTiles(startPosition ?? new Vec2f());
+            InitializeTiles();
         stopwatch.Stop();
 
         Console.WriteLine($"Initializing tiles took {stopwatch.ElapsedMilliseconds}ms");
     }
 
 
-    public TileMap(TileSet tileSet, Map tileMap, TileLayer tileLayer, IntRect? area = null, TileCreationMode creationMode = TileCreationMode.Share, Vec2f? startPosition = null)
-        : this((uint?)area?.Width ?? tileMap.Width, (uint?)area?.Height ?? tileMap.Height, tileMap.TileWidth, startPosition)
+    public TileMap(TileSet tileSet, TileLayer tileLayer, IntRect? area = null, TileCreationMode creationMode = TileCreationMode.Share)
+        : this((uint?)area?.Width ?? tileLayer.Width, (uint?)area?.Height ?? tileLayer.Height, tileSet.TileSize)
     {
         var stopwatch = Stopwatch.StartNew();
             LoadFromTiledTileLayer(tileSet, tileLayer, area, creationMode);
@@ -100,30 +97,19 @@ public class TileMap : IUpdateable, IDrawable
 
 
 
-    public void AddTilesToApp()
-        => App.AddObjects(Tiles.Cast<BaseObject>());
-
-
-    public void RemoveTilesFromApp()
-        => App.RemoveObjects(Tiles.Cast<BaseObject>());
-
-
-
-
-    private void InitializeTiles(Vec2f startPosition)
+    private void InitializeTiles()
     {
-        var currentPosition = startPosition.Copy();
-        var emptySprite = ColorTexture.FromColor(TileSize, TileSize, Color.Transparent);
+        var currentPosition = new Vec2f();
 
         for (var y = 0u; y < Height; y++, currentPosition.Y += TileSize)
         {
             for (var x = 0u; x < Width; x++, currentPosition.X += TileSize)
-                Tiles[y, x] = new Tile(emptySprite) // using the same memory address for the empty sprite for all tiles.
+                Tiles[y, x] = new Tile(TileSize)
                 {
                     Position = currentPosition.Copy()
                 };
 
-            currentPosition.X = startPosition.X;
+            currentPosition.X = 0;
         }
     }
 
@@ -143,9 +129,12 @@ public class TileMap : IUpdateable, IDrawable
             var id = tileIds[indexY, indexX];
 
             var texture = tileSet.GetTileTextureByIndex(id);
-            texture = creationMode == TileCreationMode.Copy ? new Texture(texture) : texture;
+            texture = creationMode == TileCreationMode.Instance ? new Texture(texture) : texture;
 
-            Tiles[y, x].Sprite = texture;
+            var tile = Tiles[y, x];
+
+            tile.Sprite = texture;
+            tile.Empty = id == TileSet.EmptyId;
         }
     }
 
@@ -172,7 +161,7 @@ public class TileMap : IUpdateable, IDrawable
 
         foreach (var layer in map.Layers)
             if (layer is TileLayer tileLayer)
-                tileMaps.Add(new TileMap(tileSet, map, tileLayer, area));
+                tileMaps.Add(new TileMap(tileSet, tileLayer, area));
 
         return tileMaps;
     }

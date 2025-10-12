@@ -37,7 +37,6 @@ public class TileMapParallaxLayer : ParallaxLayer
     public override void Update()
     {
         Content = Renderer.RenderTextureSprite;
-
         TileMap.Update();
 
         base.Update();

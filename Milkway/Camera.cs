@@ -94,16 +94,20 @@ public class Camera : IUpdateable
     }
 
 
-    private void UpdateFollowing()
+    protected virtual void UpdateFollowing()
+        => CenterPosition += GetPositionDeltaFromFollow();
+
+
+    protected virtual Vec2f GetPositionDeltaFromFollow()
     {
         if (Follow is null)
-            return;
+            return new Vec2f();
 
         var objectCenterPosition = (Vec2f)(Follow.Position + Follow.GetBounds().Size / 2f);
 
         var distance = CenterPosition.Distance(objectCenterPosition);
         var direction = Vector.Normalize(objectCenterPosition - CenterPosition);
 
-        CenterPosition += direction * distance / SoftFollowAmount;
+        return direction * distance / SoftFollowAmount;
     }
 }

@@ -29,22 +29,4 @@ public class TileMapParallax : Parallax
         foreach (var tileMap in tileMaps)
             Layers.Add(new TileMapParallaxLayer(tileMap, depth--));
     }
-
-
-
-
-    public void AddTilesToApp()
-    {
-        foreach (var layer in Layers)
-            if (layer is TileMapParallaxLayer tileLayer)
-                tileLayer.TileMap.AddTilesToApp();
-    }
-
-
-    public void RemoveTilesFromApp()
-    {
-        foreach (var layer in Layers)
-            if (layer is TileMapParallaxLayer tileLayer)
-                tileLayer.TileMap.RemoveTilesFromApp();
-    }
 }

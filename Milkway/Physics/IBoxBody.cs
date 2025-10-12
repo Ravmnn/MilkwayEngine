@@ -18,7 +18,7 @@ public class RigidBodyEventArgs(IBoxBody boxBody) : EventArgs
 
 public interface IBoxBody : IBody
 {
-    bool Phantom { get; set; }
+    bool Phantom { get; }
     bool IsSolid => Static && !Phantom;
 
 

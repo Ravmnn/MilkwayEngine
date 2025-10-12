@@ -14,6 +14,11 @@ namespace Milkway.Tiles;
 
 public class TileSet
 {
+    public const int EmptyId = 0;
+
+
+
+
     public Image Image { get; }
 
     public List<(uint, Texture)> TileCache { get; private set; }
@@ -38,6 +43,12 @@ public class TileSet
 
 
 
+    public static Texture GetEmptyTileTextureOfSize(uint size)
+        => ColorTexture.FromColor(size, size, Color.Transparent);
+
+
+
+
     private uint GetTileCountOrThrow()
     {
         var rest = Image.Size.X % TileSize;
@@ -55,8 +66,8 @@ public class TileSet
     public Texture GetTileTextureByIndex(uint index)
     {
         // tile index (id) of 0 means empty
-        if (index == 0)
-            return ColorTexture.FromColor(TileSize, TileSize, Color.Transparent);
+        if (index == EmptyId)
+            return GetEmptyTileTextureOfSize(TileSize);
 
         var cacheTexture = GetTileTextureFromCache(index);
         var texture = cacheTexture ?? new Texture(Image, GetAreaOfTileByIndex(index)!.Value);

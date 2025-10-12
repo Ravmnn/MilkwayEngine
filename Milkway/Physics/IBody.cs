@@ -17,7 +17,7 @@ public interface IBody
     Vec2f Velocity { get; set; }
     Vec2f Acceleration { get; set; }
 
-    bool Static { get; set; }
+    bool Static { get; }
 
 
     event EventHandler? MoveVerticallyEvent;
