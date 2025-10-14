@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 
 using SFML.Graphics;
 
@@ -9,7 +8,6 @@ using Latte.Core;
 using Latte.Core.Type;
 using Latte.Core.Objects;
 using Latte.Rendering;
-using Latte.Application;
 
 using DotTiled;
 
@@ -75,28 +73,6 @@ public class TileMap : IUpdateable, IDrawable
 
 
 
-    public virtual void Update()
-    {
-        foreach (var tile in Tiles)
-            tile.UpdateObject();
-
-        UpdateEvent?.Invoke(this, EventArgs.Empty);
-    }
-
-
-
-
-    public virtual void Draw(IRenderer renderer)
-    {
-        foreach (var tile in Tiles)
-            tile.DrawObject(renderer);
-
-        DrawEvent?.Invoke(this, EventArgs.Empty);
-    }
-
-
-
-
     private void InitializeTiles()
     {
         var currentPosition = new Vec2f();
@@ -146,10 +122,43 @@ public class TileMap : IUpdateable, IDrawable
         var matrix = new uint[height, width];
 
         for (var y = 0; y < height; y++)
-            for (var x = 0; x < width; x++)
-                matrix[y, x] = array[y * width + x];
+        for (var x = 0; x < width; x++)
+            matrix[y, x] = array[y * width + x];
 
         return matrix;
+    }
+
+
+
+
+    public virtual void Update()
+    {
+        foreach (var tile in Tiles)
+            tile.UpdateObject();
+
+        UpdateEvent?.Invoke(this, EventArgs.Empty);
+    }
+
+
+
+
+    public virtual void Draw(IRenderer renderer)
+    {
+        foreach (var tile in Tiles)
+            tile.DrawObject(renderer);
+
+        DrawEvent?.Invoke(this, EventArgs.Empty);
+    }
+
+
+
+
+    public Tile? TryGet(uint x, uint y)
+    {
+        if (x >= Width || y >= Height)
+            return null;
+
+        return Tiles[y, x];
     }
 
 

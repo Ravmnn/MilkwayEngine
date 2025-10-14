@@ -36,7 +36,7 @@ public class Tile : BaseObject
 
     public Tile(Sprite sprite)
     {
-        Size = sprite.SfmlSprite.Texture.Size.X;
+        Size = sprite.SfmlSprite.Texture.Size.X; // supposing the sprite is symmetric
         Sprite = sprite;
         Empty = false;
     }
