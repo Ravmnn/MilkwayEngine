@@ -32,9 +32,7 @@ public class ParallaxLayer(SfSprite content, float depth, int relativePriority =
 
 
     public virtual void Update()
-    {
-        UpdateEvent?.Invoke(this, EventArgs.Empty);
-    }
+        => UpdateEvent?.Invoke(this, EventArgs.Empty);
 
 
     public virtual void UpdateLayer(IParallaxCalculator calculator, Vec2f movementDelta)

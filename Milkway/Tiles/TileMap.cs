@@ -78,7 +78,7 @@ public class TileMap : IUpdateable, IDrawable
     public virtual void Update()
     {
         foreach (var tile in Tiles)
-            App.UpdateObject(tile);
+            tile.UpdateObject();
 
         UpdateEvent?.Invoke(this, EventArgs.Empty);
     }
@@ -86,10 +86,10 @@ public class TileMap : IUpdateable, IDrawable
 
 
 
-    public virtual void Draw(IRenderer target)
+    public virtual void Draw(IRenderer renderer)
     {
         foreach (var tile in Tiles)
-            App.DrawObject(target, tile);
+            tile.DrawObject(renderer);
 
         DrawEvent?.Invoke(this, EventArgs.Empty);
     }
