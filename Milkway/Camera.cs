@@ -5,6 +5,7 @@ using SFML.Graphics;
 using Latte.Core;
 using Latte.Core.Objects;
 using Latte.Core.Type;
+using Latte.UI;
 using Latte.Rendering;
 
 
@@ -13,7 +14,7 @@ namespace Milkway;
 
 
 
-public class Camera : DefaultRenderer, IUpdateable
+public class Camera : DefaultRenderer, IUpdateable, IBounds
 {
     private Vec2f _softFollowAmount;
 
@@ -107,4 +108,10 @@ public class Camera : DefaultRenderer, IUpdateable
 
         return direction * distance / SoftFollowAmount;
     }
+
+
+
+
+    public virtual FloatRect GetBounds()
+        => new FloatRect(Position, Size);
 }

@@ -12,9 +12,6 @@ namespace Milkway;
 public static class Engine
 {
     // TODO: move this to Latte
-    // TODO:
-    // the engine's philosophy should be: manual drawing and updating handling
-
     public static void InitFullScreen(string title, AppInitializationSettings? settings = null)
     {
         settings ??= AppInitializationSettings.Default;

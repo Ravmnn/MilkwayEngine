@@ -70,7 +70,10 @@ public static class TileMapCollisionExtensions
         for (var yb = y - 1; yb <= y + 1; yb++)
         for (var xb = x - 1; xb <= x + 1; xb++)
         {
-            if (xb == x && yb == y)
+            var isOriginTile = xb == x && yb == y;
+            var isAtCorner = xb != x && yb != y;
+
+            if (isOriginTile || isAtCorner)
                 continue;
 
             var tile = tileMap.TryGet((uint)yb, (uint)xb);
