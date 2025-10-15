@@ -1,5 +1,4 @@
 using SFML.Window;
-using SFML.Graphics;
 
 using Latte.Application;
 

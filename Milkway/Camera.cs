@@ -5,7 +5,6 @@ using SFML.Graphics;
 using Latte.Core;
 using Latte.Core.Objects;
 using Latte.Core.Type;
-using Latte.UI;
 using Latte.Rendering;
 
 

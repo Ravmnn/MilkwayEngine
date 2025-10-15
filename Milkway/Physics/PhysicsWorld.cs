@@ -5,7 +5,6 @@ using SFML.Graphics;
 
 using Latte.Core;
 using Latte.Core.Type;
-using Milkway.Tiles;
 
 
 namespace Milkway.Physics;
