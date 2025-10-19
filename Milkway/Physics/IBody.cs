@@ -1,5 +1,6 @@
 using System;
 
+using Latte.Application;
 using Latte.Core.Type;
 
 
@@ -34,10 +35,12 @@ public interface IBody
             return;
         }
 
-        Position.X += Velocity.X;
+        var dt = (float)DeltaTime.Seconds;
+
+        Position.X += Velocity.X * dt;
         OnMoveHorizontally();
 
-        Position.Y += Velocity.Y;
+        Position.Y += Velocity.Y * dt;
         OnMoveVertically();
 
         Velocity += Acceleration;

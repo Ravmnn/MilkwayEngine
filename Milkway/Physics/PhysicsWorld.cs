@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-
+using Latte.Application;
 using SFML.Graphics;
 
 using Latte.Core;
@@ -39,9 +39,10 @@ public class PhysicsWorld : IUpdateable
     protected virtual void ApplyInfluencesTo(IBody body)
     {
         const float DragFactor = 0.01f;
+        var dt = (float)DeltaTime.Seconds;
 
-        body.Acceleration += Gravity;
-        body.Acceleration -= Drag * body.Velocity * DragFactor;
+        body.Acceleration += Gravity * dt;
+        body.Acceleration -= Drag * body.Velocity * DragFactor * dt;
     }
 
 
