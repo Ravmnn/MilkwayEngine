@@ -15,30 +15,25 @@ public class Tile : BaseObject
 
 
 
+    public TileSet TileSet { get; }
+    public TileSetItem Source { get; }
 
-    public uint Size { get; set; }
+    public Sprite Sprite { get; }  // TODO: can't Tile inherit directly from Sprite?
+    public uint Size => TileSet.TileSize;
 
-    public Sprite Sprite { get; set; }
-    public bool Empty { get; set; }
-
-
+    public bool Empty => Source.Id == TileSet.EmptyId;
 
 
-    // TODO: tile must use tile set id system obligatorily, unless you find a better way
 
-    public Tile(uint size)
+
+    public Tile(TileSet tileSet, uint id)
     {
-        Size = size;
-        Sprite = TileSet.GetEmptyTileTextureOfSize(size);
-        Empty = true;
-    }
+        var tile = tileSet.GetTile(id);
 
+        TileSet = tileSet;
+        Source = tile;
 
-    public Tile(Sprite sprite)
-    {
-        Size = sprite.SfmlSprite.Texture.Size.X; // supposing the sprite is symmetric
-        Sprite = sprite;
-        Empty = false;
+        Sprite = new Sprite(tile.Texture);
     }
 
 

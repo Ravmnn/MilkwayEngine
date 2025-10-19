@@ -12,6 +12,9 @@ namespace Milkway.Tiles;
 
 
 
+public readonly record struct TileSetItem(Texture Texture, IntRect Area, uint Id);
+
+
 public class TileSet
 {
     public const int EmptyId = 0;
@@ -20,8 +23,9 @@ public class TileSet
 
 
     public Image Image { get; }
+    public Texture ImageTexture { get; }
 
-    public List<(uint, Texture)> TileCache { get; private set; }
+    public List<TileSetItem> TileCache { get; }
 
 
     public uint TileSize { get; }
@@ -33,8 +37,13 @@ public class TileSet
     public TileSet(Image image, uint tileSize)
     {
         Image = image;
+        ImageTexture = new Texture(Image);
+
         TileCache = [];
         TileSize = tileSize;
+
+        // empty tile
+        TileCache.Add(new TileSetItem(GetEmptyTextureOfSize(tileSize), new IntRect(), EmptyId));
 
         if (Image.Size.X != Image.Size.Y)
             throw new AssymetricTileSetSizeException();
@@ -43,7 +52,7 @@ public class TileSet
 
 
 
-    public static Texture GetEmptyTileTextureOfSize(uint size)
+    public static Texture GetEmptyTextureOfSize(uint size)
         => ColorTexture.FromColor(size, size, Color.Transparent);
 
 
@@ -63,27 +72,25 @@ public class TileSet
 
 
 
-    public Texture GetTileTextureByIndex(uint index)
+    public TileSetItem GetTile(uint id)
     {
-        // tile index (id) of 0 means empty
-        if (index == EmptyId)
-            return GetEmptyTileTextureOfSize(TileSize);
+        var cacheTile = GetTileFromCache(id);
 
-        var cacheTexture = GetTileTextureFromCache(index);
-        var texture = cacheTexture ?? new Texture(Image, GetAreaOfTileByIndex(index)!.Value);
+        var area = GetTileArea(id)!.Value;
+        var tile = cacheTile ?? new TileSetItem(new Texture(Image, area), area, id);
 
-        if (cacheTexture is null)
-            TileCache.Add((index, texture));
+        if (cacheTile is null)
+            TileCache.Add(tile);
 
-        return texture;
+        return tile;
     }
 
 
-    private Texture? GetTileTextureFromCache(uint index)
+    private TileSetItem? GetTileFromCache(uint id)
     {
         foreach (var tile in TileCache)
-            if (tile.Item1 == index)
-                return tile.Item2; // sharing the same memory address!
+            if (tile.Id == id)
+                return tile; // texture sharing the same memory address
 
         return null;
     }
@@ -91,14 +98,19 @@ public class TileSet
 
 
 
-    private IntRect? GetAreaOfTileByIndex(uint index)
+    public IntRect? GetTileArea(uint id)
     {
+        // TODO: algorithm probably can be improved
+
+        if (id == EmptyId)
+            return new IntRect();
+
         var position = new Vec2i();
         var size = new Vec2i((int)TileSize, (int)TileSize);
 
         for (var i = 1; i <= TileCount; i++)
         {
-            if (i == index)
+            if (i == id)
                 return new IntRect(position, size);
 
             position.X += (int)TileSize;

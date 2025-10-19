@@ -41,7 +41,7 @@ public static class TileMapCollisionExtensions
         {
             ref var tile = ref tileMap.Tiles[y, x];
 
-            if (!tile.Empty)
+            if (tile is not null && !tile.Empty)
                 tile = new SolidTile(world, tile);
         }
     }
@@ -56,7 +56,7 @@ public static class TileMapCollisionExtensions
         {
             ref var tile = ref tileMap.Tiles[y, x];
 
-            if (IsTileAtOutline(tileMap, y, x))
+            if (tile is not null && IsTileAtOutline(tileMap, y, x))
                 tile = new SolidTile(world, tile);
         }
     }

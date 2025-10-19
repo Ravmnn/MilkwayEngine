@@ -20,7 +20,7 @@ public class SolidTile : Tile, IBoxBody
     public Vec2f Velocity { get; set; } = new Vec2f();
     public Vec2f Acceleration { get; set; } = new Vec2f();
 
-    public bool Static { get; set; } = true;
+    public bool Static => true;
     public bool Phantom { get; set; }
 
 
@@ -31,19 +31,13 @@ public class SolidTile : Tile, IBoxBody
 
 
 
-    public SolidTile(PhysicsWorld physicsWorld, uint size) : base(size)
+    public SolidTile(PhysicsWorld physicsWorld, TileSet tileSet, uint id) : base(tileSet, id)
     {
         physicsWorld.AddBody(this);
     }
 
 
-    public SolidTile(PhysicsWorld physicsWorld, Sprite sprite) : base(sprite)
-    {
-        physicsWorld.AddBody(this);
-    }
-
-
-    public SolidTile(PhysicsWorld physicsWorld, Tile tile) : this(physicsWorld, tile.Sprite)
+    public SolidTile(PhysicsWorld physicsWorld, Tile tile) : this(physicsWorld, tile.TileSet, tile.Source.Id)
     {
         Position = tile.Position;
     }
