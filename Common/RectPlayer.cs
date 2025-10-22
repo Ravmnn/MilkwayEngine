@@ -16,7 +16,7 @@ public class RectPlayer : RectBody
 
     public override void Update()
     {
-        const float AccelerationFactor = 0.5f;
+        const float AccelerationFactor = 30f;
 
         if (Keyboard.IsKeyPressed(Keyboard.Key.W))
             Acceleration.Y = -AccelerationFactor;

@@ -1,15 +1,18 @@
 using System;
 using System.Collections.Generic;
-using Latte.Application;
+
 using SFML.Graphics;
 
 using Latte.Core;
 using Latte.Core.Type;
+using Latte.Application;
 
 
 namespace Milkway.Physics;
 
 
+
+// TODO: add drag to bodies surface
 
 
 public class PhysicsWorld : IUpdateable

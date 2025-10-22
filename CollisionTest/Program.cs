@@ -27,8 +27,8 @@ static class CollisionTestProgram
     {
         PhysicsWorld = new PhysicsWorld
         {
-            Drag = new Vec2f(1.5f, 1.5f),
-            Gravity = new Vec2f(y: 0.2f)
+            Drag = new Vec2f(100f, 100f),
+            Gravity = new Vec2f(y: 300f)
         };
 
         Player = new RectPlayer();
@@ -42,7 +42,7 @@ static class CollisionTestProgram
         Engine.InitFullScreen("Milkway Engine - Collision Test");
 
 
-        App.AddObjects(Player);
+        App.Section.AddObjects(Player);
 
         while (!App.ShouldQuit)
         {
@@ -82,7 +82,7 @@ static class CollisionTestProgram
         var body = new RectBody(WallStart, WallEnd - WallStart) { Static = true };
 
         PhysicsWorld.AddBody(body);
-        App.AddObject(body);
+        App.Section.AddObject(body);
 
         WallStart = WallEnd = null;
     }
@@ -98,7 +98,7 @@ static class CollisionTestProgram
             if (MouseInput.PositionInView.IsPointOverObject(wall) && Mouse.IsButtonPressed(Mouse.Button.Right))
             {
                 PhysicsWorld.RemoveBody(wall);
-                App.RemoveObject(wall);
+                App.Section.RemoveObject(wall);
             }
         }
     }

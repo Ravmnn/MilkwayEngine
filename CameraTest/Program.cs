@@ -28,7 +28,7 @@ public static class CameraTestProgram
         Camera = new Camera(App.Window);
         PhysicsWorld = new PhysicsWorld
         {
-            Drag = new Vec2f(2f, 2f)
+            Drag = new Vec2f(100f, 100f)
         };
 
         Player = new RectPlayer();
@@ -51,7 +51,7 @@ public static class CameraTestProgram
             var position = new Vec2f(randomGenerator.Next((int)from.X, (int)to.X), randomGenerator.Next((int)from.Y, (int)to.Y));
             var size = randomGenerator.Next((int)sizeStart, (int)sizeEnd);
 
-            App.AddObject(new RectangleObject(position, new Vec2f(size, size)));
+            App.Section.AddObject(new RectangleObject(position, new Vec2f(size, size)));
         }
     }
 
@@ -59,7 +59,7 @@ public static class CameraTestProgram
     public static void Main()
     {
         PhysicsWorld.AddBody(Player);
-        App.AddObject(Player);
+        App.Section.AddObject(Player);
 
         CreateRandomSquares(1000, new FloatRect(-3000f, -3000f, 12000f, 12000f), 10f, 50f);
 
