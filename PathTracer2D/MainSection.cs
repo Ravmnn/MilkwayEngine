@@ -21,13 +21,13 @@ public sealed class MainSection : Section
     private readonly RaySource _mouseLight;
 
 
-    public Vec2u Resolution => new Vec2u(16 * 120, 9 * 120);
-    public Vec2u WindowResolution => App.Window.Size;
+    public Vec2u Viewport => new Vec2u(16 * 120, 9 * 120);
+    public Vec2u Resolution => Viewport / 2;
 
-    public Vec2f Scale => (Vec2f)WindowResolution / (Vec2f)Resolution;
+    public Vec2f Scale => (Vec2f)Viewport / (Vec2f)Resolution;
 
 
-    public RayTracer RayTracer { get; set; }
+    public PathTracer PathTracer { get; set; }
 
 
     public bool DebugDrawRayLines { get; set; }
@@ -42,7 +42,7 @@ public sealed class MainSection : Section
         _mouseLight = new RaySource(new Vec2f(), 64);
 
 
-        RayTracer = new RayTracer([], [_mouseLight]);
+        PathTracer = new PathTracer([], [_mouseLight]);
 
 
         for (var i = 0; i < 50; i++)
@@ -51,7 +51,7 @@ public sealed class MainSection : Section
             var position = new Vec2f(generator.Next(0, 1920), generator.Next(0, 1080));
             var size = new Vec2f(generator.Next(15, 200), generator.Next(5, 200));
 
-            RayTracer.Segments.AddRange(RectangleSegment(position, size));
+            PathTracer.Segments.AddRange(RectangleSegment(position, size));
         }
 
 
@@ -88,7 +88,7 @@ public sealed class MainSection : Section
     private void ProcessMouseInput(object? _, MouseButtonEventArgs args)
     {
         if (args.Button == Mouse.Button.Left)
-            RayTracer.RaySources.Add(new RaySource(_mouseLight.Position, _mouseLight.RayCount));
+            PathTracer.RaySources.Add(new RaySource(_mouseLight.Position, _mouseLight.RayCount));
     }
 
 
@@ -116,8 +116,7 @@ public sealed class MainSection : Section
 
     public override void Draw(IRenderer renderer)
     {
-        // TODO: be able to correctly change the resolution without breaking the coordinate system
-        var scene = RayTracer.Render(Resolution);
+        var scene = PathTracer.Render(Resolution, Viewport);
         var sprite = new Sprite(new Texture(scene));
         sprite.Scale = Scale;
 
@@ -133,7 +132,7 @@ public sealed class MainSection : Section
 
     private void DrawRaySources(IRenderer renderer)
     {
-        foreach (var raySource in RayTracer.RaySources)
+        foreach (var raySource in PathTracer.RaySources)
             Latte.Debugging.Draw.Point(renderer, raySource.Position);
     }
 
@@ -153,9 +152,9 @@ public sealed class MainSection : Section
 
     private void DebugRayLines(IRenderer renderer)
     {
-        var intersectionPoints = RayTracer.TraceAll();
+        var intersectionPoints = PathTracer.TraceAll();
 
-        foreach (var ray in RayTracer.Rays)
+        foreach (var ray in PathTracer.Rays)
             Latte.Debugging.Draw.Line(renderer, ray.Origin, ray.At(10000), Color.Red);
 
         foreach (var intersectionPoint in intersectionPoints)
@@ -165,7 +164,7 @@ public sealed class MainSection : Section
 
     private void DebugSegments(IRenderer renderer)
     {
-        foreach (var segment in RayTracer.Segments)
+        foreach (var segment in PathTracer.Segments)
             Latte.Debugging.Draw.Line(renderer, segment.Start, segment.End, Color.White);
     }
 

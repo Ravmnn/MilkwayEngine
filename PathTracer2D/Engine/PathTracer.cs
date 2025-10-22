@@ -14,7 +14,7 @@ public readonly record struct PixelColor(Vec2f Position, ColorRGBA Color);
 
 
 
-public class RayTracer()
+public class PathTracer()
 {
     public List<Segment> Segments { get; set; } = [];
     public List<RaySource> RaySources { get; set; } = [];
@@ -24,7 +24,7 @@ public class RayTracer()
 
 
 
-    public RayTracer(List<Segment> segments, List<RaySource> raySources) : this()
+    public PathTracer(List<Segment> segments, List<RaySource> raySources) : this()
     {
         Segments = segments;
         RaySources = raySources;
@@ -33,7 +33,7 @@ public class RayTracer()
 
 
 
-    public Image Render(Vec2u resolution)
+    public Image Render(Vec2u resolution, Vec2u viewport)
     {
         var pixels = new Color[resolution.X, resolution.Y];
         var intersectionPoints = TraceAll();
@@ -41,19 +41,35 @@ public class RayTracer()
             = from intersectionPoint in intersectionPoints select new PixelColor(intersectionPoint.Point, Color.White);
 
         foreach (var pixelColor in pixelColors)
-        {
-            var indexX = (int)Math.Round(pixelColor.Position.X);
-            var indexY = (int)Math.Round(pixelColor.Position.Y);
-
-            if (indexX < 0 || indexX >= pixels.GetLength(0) ||
-                indexY < 0 || indexY >= pixels.GetLength(1))
-                continue;
-
-            pixels[indexX, indexY] = pixelColor.Color;
-        }
+            RenderPixel(pixels, pixelColor, resolution, viewport);
 
         return new Image(pixels);
     }
+
+
+    private void RenderPixel(Color[,] pixels, PixelColor pixelColor, Vec2u resolution, Vec2u viewport)
+    {
+        var roundedPosition = new Vec2f(MathF.Round(pixelColor.Position.X), MathF.Round(pixelColor.Position.Y));
+        var normalizedDeviceCoordinate = MapToNormalizedDeviceCoordinate(viewport, roundedPosition);
+        var imagePixel = MapNormalizedDeviceCoordinateToPixel(resolution, normalizedDeviceCoordinate);
+
+        if (imagePixel.X < 0 || imagePixel.X >= pixels.GetLength(0) ||
+            imagePixel.Y < 0 || imagePixel.Y >= pixels.GetLength(1))
+            return;
+
+        pixels[imagePixel.X, imagePixel.Y] = pixelColor.Color;
+    }
+
+
+    private Vec2i MapNormalizedDeviceCoordinateToPixel(Vec2u imageResolution, Vec2f coordinate)
+    {
+        var unsignedCoordinate = (coordinate + new Vec2f(1, 1)) / 2;
+        return imageResolution * unsignedCoordinate;
+    }
+
+
+    private Vec2f MapToNormalizedDeviceCoordinate(Vec2u viewport, Vec2f coordinate)
+        => coordinate / (Vec2f)viewport * 2 - new Vec2f(1, 1);
 
 
 

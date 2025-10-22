@@ -12,7 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{80513E5B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{F0DDD7D9-9560-44C1-9B25-E9702044D160}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayTracer2D", "RayTracer2D\RayTracer2D.csproj", "{1442D677-4313-4DBF-8964-27290538F7EA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PathTracer2D", "PathTracer2D\PathTracer2D.csproj", "{1442D677-4313-4DBF-8964-27290538F7EA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,5 +1,7 @@
 ﻿using System.Reflection;
 
+using SFML.Window;
+
 using Latte.Core;
 using Latte.Application;
 
@@ -14,14 +16,14 @@ class Program
     private static void Main()
     {
         var settings = AppInitializationSettings.Default;
-        var contextSettings = AppInitializationSettings.DefaultContextSettings with { AntialiasingLevel = 0 };
+        var contextSettings = AppInitializationSettings.DefaultContextSettings with { AntialiasingLevel = 4 };
 
         settings = settings with { ContextSettings = contextSettings };
 
 
-        Milkway.Engine.InitFullScreen("2D Ray Tracer", settings);
+        App.Init(VideoMode.DesktopMode, "2D Path Tracer", settings);
 
-        EmbeddedResourceLoader.ResourcesPath = "RayTracer2D.Resources";
+        EmbeddedResourceLoader.ResourcesPath = "PathTracer2D.Resources";
         EmbeddedResourceLoader.SourceAssembly = Assembly.GetExecutingAssembly();
 
 
