@@ -1,7 +1,7 @@
 using Latte.Core.Type;
 
 
-namespace RayTracer2D.Engine;
+namespace PathTracer2D.Engine;
 
 
 

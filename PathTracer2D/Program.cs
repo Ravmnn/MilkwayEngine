@@ -6,7 +6,7 @@ using Latte.Core;
 using Latte.Application;
 
 
-namespace RayTracer2D;
+namespace PathTracer2D;
 
 
 

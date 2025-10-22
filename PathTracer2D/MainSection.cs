@@ -5,13 +5,13 @@ using Latte.Core.Type;
 using Latte.Rendering;
 using Latte.Application;
 
-using RayTracer2D.Engine;
+using PathTracer2D.Engine;
 
 
 using MouseButtonEventArgs = Latte.Application.MouseButtonEventArgs;
 
 
-namespace RayTracer2D;
+namespace PathTracer2D;
 
 
 
@@ -21,8 +21,8 @@ public sealed class MainSection : Section
     private readonly RaySource _mouseLight;
 
 
+    public Vec2u Resolution => new Vec2u(16 * 120, 9 * 120) / 2;
     public Vec2u Viewport => new Vec2u(16 * 120, 9 * 120);
-    public Vec2u Resolution => Viewport / 2;
 
     public Vec2f Scale => (Vec2f)Viewport / (Vec2f)Resolution;
 
@@ -39,20 +39,10 @@ public sealed class MainSection : Section
 
     public MainSection()
     {
-        _mouseLight = new RaySource(new Vec2f(), 64);
+        _mouseLight = new RaySource(new Vec2f(), 256);
 
 
-        PathTracer = new PathTracer([], [_mouseLight]);
-
-
-        for (var i = 0; i < 50; i++)
-        {
-            var generator = new Random();
-            var position = new Vec2f(generator.Next(0, 1920), generator.Next(0, 1080));
-            var size = new Vec2f(generator.Next(15, 200), generator.Next(5, 200));
-
-            PathTracer.Segments.AddRange(RectangleSegment(position, size));
-        }
+        PathTracer = new PathTracer([new RectangleObject(new Vec2f(1300, 300), new Vec2f(200, 200))], [_mouseLight]);
 
 
         DebugDrawRayLines = false;
@@ -62,15 +52,6 @@ public sealed class MainSection : Section
 
         MouseInput.ButtonUpEvent += ProcessMouseInput;
     }
-
-
-    private Segment[] RectangleSegment(Vec2f position, Vec2f size)
-        => [
-            new Segment(position, position + new Vec2f(size.X, 0)),
-            new Segment(position + new Vec2f(size.X, 0), position + size),
-            new Segment(position + size, position + new Vec2f(0, size.Y)),
-            new Segment(position + new Vec2f(0, size.Y), position)
-        ];
 
 
 
@@ -164,8 +145,9 @@ public sealed class MainSection : Section
 
     private void DebugSegments(IRenderer renderer)
     {
-        foreach (var segment in PathTracer.Segments)
-            Latte.Debugging.Draw.Line(renderer, segment.Start, segment.End, Color.White);
+        foreach (var @object in PathTracer.Objects)
+            foreach (var segment in @object.Segments)
+                Latte.Debugging.Draw.Line(renderer, segment.Start, segment.End, Color.White);
     }
 
 

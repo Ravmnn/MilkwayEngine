@@ -1,15 +1,17 @@
 using Latte.Core.Type;
 
 
-namespace RayTracer2D.Engine;
+namespace PathTracer2D.Engine;
 
 
 
 
-public struct Segment(Vec2f start, Vec2f end)
+public readonly struct Segment(Object owner, Vec2f start, Vec2f end)
 {
-    public Vec2f Start { get; set; } = start;
-    public Vec2f End { get; set; } = end;
+    public Object Owner { get; } = owner;
+
+    public Vec2f Start { get; } = start;
+    public Vec2f End { get; } = end;
 
     public Vec2f Vector => End - Start;
 

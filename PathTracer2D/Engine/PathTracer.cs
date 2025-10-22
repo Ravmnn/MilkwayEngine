@@ -4,7 +4,7 @@ using Latte.Core.Type;
 
 
 
-namespace RayTracer2D.Engine;
+namespace PathTracer2D.Engine;
 
 
 
@@ -16,7 +16,7 @@ public readonly record struct PixelColor(Vec2f Position, ColorRGBA Color);
 
 public class PathTracer()
 {
-    public List<Segment> Segments { get; set; } = [];
+    public List<Object> Objects { get; set; } = [];
     public List<RaySource> RaySources { get; set; } = [];
 
     public List<Ray> Rays { get; set; } = [];
@@ -24,9 +24,9 @@ public class PathTracer()
 
 
 
-    public PathTracer(List<Segment> segments, List<RaySource> raySources) : this()
+    public PathTracer(List<Object> objects, List<RaySource> raySources) : this()
     {
-        Segments = segments;
+        Objects = objects;
         RaySources = raySources;
     }
 
@@ -103,9 +103,12 @@ public class PathTracer()
     {
         var intersectionPoints = new List<IntersectionPoint>();
 
-        foreach (var segment in Segments)
-            if (ray.IntersectsSegment(segment, out var t, out var u))
-                intersectionPoints.Add(new IntersectionPoint(ray, t, u));
+        // TODO: apply material
+
+        foreach (var @object in Objects)
+            foreach (var segment in @object.Segments)
+                if (ray.IntersectsSegment(segment, out var t, out var u))
+                    intersectionPoints.Add(new IntersectionPoint(ray, t, u));
 
         if (intersectionPoints.Count == 0)
             return null;
