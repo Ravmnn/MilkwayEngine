@@ -1,3 +1,5 @@
+using SFML.Graphics;
+
 using Latte.Core.Type;
 
 
@@ -8,7 +10,8 @@ namespace PathTracer2D.Engine;
 
 public class RectangleObject : Object
 {
-    public RectangleObject(Vec2f position, Vec2f size)
+    public RectangleObject(Vec2f position, Vec2f size, NormalizedColorRGBA? color = null)
+        : base(new Material(color ?? Color.White))
     {
         Segments = [
             new Segment(this, position, position + new Vec2f(size.X, 0)),

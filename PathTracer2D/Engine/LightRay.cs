@@ -6,10 +6,16 @@ namespace PathTracer2D.Engine;
 
 
 
-public class Ray(Vec2f origin, Vec2f direction)
+public struct LightRay(Vec2f origin, Vec2f direction, NormalizedColorRGBA? color = null, float startEnergy = 1.0f)
 {
     public Vec2f Origin { get; set; } = origin;
     public Vec2f Direction { get; set; } = direction;
+
+
+    public NormalizedColorRGBA RawColor { get; set; } = color ?? SFML.Graphics.Color.White;
+    public NormalizedColorRGBA Color => RawColor * new NormalizedColorRGBA(Energy, Energy, Energy);
+
+    public float Energy { get; set; } = startEnergy;
 
 
 

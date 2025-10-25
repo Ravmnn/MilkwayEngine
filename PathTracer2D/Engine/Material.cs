@@ -6,8 +6,8 @@ namespace PathTracer2D.Engine;
 
 
 
-public struct Material
+public struct Material(NormalizedColorRGBA color, float spreading = 0.0f)
 {
-    public ColorRGBA Color { get; set; }
-    public float Spreading { get; set; }
+    public NormalizedColorRGBA Color { get; set; } = color;
+    public float Spreading { get; set; } = spreading;
 }

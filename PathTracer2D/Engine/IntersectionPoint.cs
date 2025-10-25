@@ -6,11 +6,14 @@ namespace PathTracer2D.Engine;
 
 
 
-public readonly struct IntersectionPoint(Ray ray, float t, float u)
+public readonly struct IntersectionPoint(LightRay lightRay, Segment segment, float t, float u)
 {
-    public Ray Ray { get; init; } = ray;
+    public LightRay LightRay { get; init; } = lightRay;
+    public Segment Segment { get; init; } = segment;
+    public Object Object => Segment.Owner;
+
     public float RayT { get; init; } = t;
     public float SegmentU { get; init; } = u;
 
-    public Vec2f Point => Ray.At(RayT);
+    public Vec2f Point => LightRay.At(RayT);
 }

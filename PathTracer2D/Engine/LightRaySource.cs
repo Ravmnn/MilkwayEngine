@@ -6,7 +6,7 @@ namespace PathTracer2D.Engine;
 
 
 
-public class RaySource(Vec2f position, int rayCount)
+public class LightRaySource(Vec2f position, int rayCount)
 {
     public Vec2f Position { get; set; } = position;
     public int RayCount { get; set; } = rayCount;
@@ -14,12 +14,12 @@ public class RaySource(Vec2f position, int rayCount)
 
 
 
-    public IEnumerable<Ray> GenerateRays()
+    public IEnumerable<LightRay> GenerateRays()
     {
-        var rays = new List<Ray>();
+        var rays = new List<LightRay>();
 
         for (var i = 0; i < RayCount; i++)
-            rays.Add(new Ray(Position, RandomDirection()));
+            rays.Add(new LightRay(Position, RandomDirection()));
 
         return rays;
     }

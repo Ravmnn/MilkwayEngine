@@ -17,14 +17,14 @@ public readonly record struct PixelColor(Vec2f Position, ColorRGBA Color);
 public class PathTracer()
 {
     public List<Object> Objects { get; set; } = [];
-    public List<RaySource> RaySources { get; set; } = [];
+    public List<LightRaySource> RaySources { get; set; } = [];
 
-    public List<Ray> Rays { get; set; } = [];
-
-
+    public List<LightRay> Rays { get; set; } = [];
 
 
-    public PathTracer(List<Object> objects, List<RaySource> raySources) : this()
+
+
+    public PathTracer(List<Object> objects, List<LightRaySource> raySources) : this()
     {
         Objects = objects;
         RaySources = raySources;
@@ -37,8 +37,7 @@ public class PathTracer()
     {
         var pixels = new Color[resolution.X, resolution.Y];
         var intersectionPoints = TraceAll();
-        var pixelColors
-            = from intersectionPoint in intersectionPoints select new PixelColor(intersectionPoint.Point, Color.White);
+        var pixelColors = Colorize(intersectionPoints);
 
         foreach (var pixelColor in pixelColors)
             RenderPixel(pixels, pixelColor, resolution, viewport);
@@ -88,6 +87,25 @@ public class PathTracer()
     }
 
 
+    private IntersectionPoint? Trace(LightRay lightRay)
+    {
+        var intersectionPoints = new List<IntersectionPoint>();
+
+        // TODO: add ray bouncing and light energy loss
+        foreach (var @object in Objects)
+        foreach (var segment in @object.Segments)
+            if (lightRay.IntersectsSegment(segment, out var t, out var u))
+                intersectionPoints.Add(new IntersectionPoint(lightRay, segment, t, u));
+
+        if (intersectionPoints.Count == 0)
+            return null;
+
+        intersectionPoints = intersectionPoints.OrderBy(point => point.RayT).ToList();
+
+        return intersectionPoints.First();
+    }
+
+
     private void GenerateRaysFromSources()
     {
         Rays.Clear();
@@ -99,22 +117,23 @@ public class PathTracer()
 
 
 
-    private IntersectionPoint? Trace(Ray ray)
+    public IEnumerable<PixelColor> Colorize(IEnumerable<IntersectionPoint> points)
     {
-        var intersectionPoints = new List<IntersectionPoint>();
+        // TODO: this should not be a separated step
+        var pixelColors = new List<PixelColor>();
 
-        // TODO: apply material
+        foreach (var point in points)
+            pixelColors.Add(new PixelColor(point.Point, CalculateColorOfIntersection(point)));
 
-        foreach (var @object in Objects)
-            foreach (var segment in @object.Segments)
-                if (ray.IntersectsSegment(segment, out var t, out var u))
-                    intersectionPoints.Add(new IntersectionPoint(ray, t, u));
+        return pixelColors;
+    }
 
-        if (intersectionPoints.Count == 0)
-            return null;
 
-        intersectionPoints = intersectionPoints.OrderBy(point => point.RayT).ToList();
+    private NormalizedColorRGBA CalculateColorOfIntersection(IntersectionPoint point)
+    {
+        var rayColor = point.LightRay.Color;
+        var objectColor = point.Object.Material.Color;
 
-        return intersectionPoints.First();
+        return new NormalizedColorRGBA(rayColor * objectColor);
     }
 }

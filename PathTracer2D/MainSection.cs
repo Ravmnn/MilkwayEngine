@@ -18,7 +18,7 @@ namespace PathTracer2D;
 
 public sealed class MainSection : Section
 {
-    private readonly RaySource _mouseLight;
+    private readonly LightRaySource _mouseLight;
 
 
     public Vec2u Resolution => new Vec2u(16 * 120, 9 * 120) / 2;
@@ -39,10 +39,13 @@ public sealed class MainSection : Section
 
     public MainSection()
     {
-        _mouseLight = new RaySource(new Vec2f(), 256);
+        _mouseLight = new LightRaySource(new Vec2f(), 512);
 
 
-        PathTracer = new PathTracer([new RectangleObject(new Vec2f(1300, 300), new Vec2f(200, 200))], [_mouseLight]);
+        PathTracer = new PathTracer(
+            [new RectangleObject(new Vec2f(1300, 300), new Vec2f(200, 200), Color.Green)],
+            [_mouseLight]
+        );
 
 
         DebugDrawRayLines = false;
@@ -69,7 +72,7 @@ public sealed class MainSection : Section
     private void ProcessMouseInput(object? _, MouseButtonEventArgs args)
     {
         if (args.Button == Mouse.Button.Left)
-            PathTracer.RaySources.Add(new RaySource(_mouseLight.Position, _mouseLight.RayCount));
+            PathTracer.RaySources.Add(new LightRaySource(_mouseLight.Position, _mouseLight.RayCount));
     }
 
 
@@ -139,7 +142,7 @@ public sealed class MainSection : Section
             Latte.Debugging.Draw.Line(renderer, ray.Origin, ray.At(10000), Color.Red);
 
         foreach (var intersectionPoint in intersectionPoints)
-            Latte.Debugging.Draw.Line(renderer, intersectionPoint.Ray.Origin, intersectionPoint.Point, Color.Blue);
+            Latte.Debugging.Draw.Line(renderer, intersectionPoint.LightRay.Origin, intersectionPoint.Point, Color.Blue);
     }
 
 
