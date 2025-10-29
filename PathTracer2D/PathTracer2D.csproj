@@ -15,5 +15,9 @@
     <ItemGroup>
         <EmbeddedResource Include="Resources/**/*" />
     </ItemGroup>
+    
+    <ItemGroup>
+      <Folder Include="Engine\" />
+    </ItemGroup>
 
 </Project>

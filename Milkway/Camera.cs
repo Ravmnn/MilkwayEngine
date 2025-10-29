@@ -103,7 +103,7 @@ public class Camera : DefaultRenderer, IUpdateable, IBounds
         var objectCenterPosition = (Vec2f)(Follow.Position + Follow.GetBounds().Size / 2f);
 
         var distance = CenterPosition.Distance(objectCenterPosition);
-        var direction = Vector.Normalize(objectCenterPosition - CenterPosition);
+        var direction = Vector.Normalized(objectCenterPosition - CenterPosition);
 
         return direction * distance / SoftFollowAmount;
     }
